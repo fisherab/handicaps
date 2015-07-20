@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class Main {
 
+	boolean debug = false;
+
 	int[] trigger = { 1000, 800, 650, 500, 400, 350, 300, 250, 200, 150, 100, 50, 0 };
 
 	int[][] table = { { 10, 6, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 14, 10, 7, 4, 3, 3, 2, 2, 1, 1, 1, 1, 1 },
@@ -24,8 +26,10 @@ public class Main {
 	}
 
 	Main() {
-		for (int i = 0; i < table.length; i++) {
-			System.out.println(i + " " + table[i].length);
+		if (debug) {
+			for (int i = 0; i < table.length; i++) {
+				System.out.println(i + " " + table[i].length);
+			}
 		}
 
 		Map<String, Person> people = new HashMap<>();
@@ -41,7 +45,9 @@ public class Main {
 				int index = Integer.parseInt(bits[3]);
 				Person p = new Person(name, date, handicap, index);
 				people.put(name, p);
-				System.out.println(p);
+				if (debug) {
+					System.out.println(p);
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -94,7 +100,9 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		System.out.println("Final handicap check");
+		if (debug) {
+			System.out.println("Final handicap check");
+		}
 		for (Person p : people.values()) {
 			checkHandicap(p);
 			System.out.println(p.name + " " + p.index + "/" + p.handicap + " " + (p.index - p.initialIndex) + "/"
@@ -121,8 +129,10 @@ public class Main {
 			points = wins ? 10 : -10;
 		}
 		person.date = date;
-		System.out.println(person + " " + (wins ? "wins" : "loses") + " against " + handicap + " "
-				+ (level ? "level" : "handicap") + " to gain " + points);
+		if (debug) {
+			System.out.println(person + " " + (wins ? "wins" : "loses") + " against " + handicap + " "
+					+ (level ? "level" : "handicap") + " to gain " + points);
+		}
 		person.index += points;
 		if (person.index < 0) {
 			person.index = 0;
