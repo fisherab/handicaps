@@ -6,41 +6,60 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Main {
+public class OldMain {
 
-	String personToFollow = "Pam";
+	String personToFollow = "Ian";
 
-	boolean debug = true;
+	boolean debug = false;
 
-	public static void main(String[] args) throws IOException {
-		new Main();
+	static int[] trigger = { 1000, 800, 650, 500, 400, 350, 300, 250, 200, 150, 100, 50, 0 };
+
+	static int[][] table = { { 10, 6, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 14, 10, 7, 4, 3, 3, 2, 2, 1, 1, 1, 1, 1 },
+			{ 16, 13, 10, 7, 5, 4, 4, 3, 3, 2, 2, 1, 1 }, { 18, 16, 13, 10, 8, 7, 6, 5, 4, 4, 3, 3, 2 },
+			{ 19, 17, 15, 12, 10, 9, 8, 7, 6, 5, 4, 4, 3 }, { 19, 17, 16, 13, 11, 10, 9, 8, 7, 6, 5, 4, 4 },
+			{ 19, 18, 16, 14, 12, 11, 10, 9, 8, 7, 6, 5, 4 }, { 19, 18, 17, 15, 13, 12, 11, 10, 9, 8, 7, 6, 5 },
+			{ 19, 19, 17, 16, 14, 13, 12, 11, 10, 9, 8, 7, 6 }, { 19, 19, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7 },
+			{ 19, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 }, { 19, 19, 19, 17, 16, 16, 15, 14, 13, 12, 11, 10, 9 },
+			{ 19, 19, 19, 18, 17, 16, 16, 15, 14, 13, 12, 11, 10 } };
+
+	public static void main(String[] args) {
+
+		new OldMain();
+
 	}
 
-	Main() throws IOException {
+	OldMain() {
+		if (debug) {
+			for (int i = 0; i < table.length; i++) {
 
-		Triggers triggers = new Triggers("triggers.txt");
-
-		Swap swaps = new Swap("swap.txt");
+				for (int j = 0; j < table.length; j++) {
+					System.out.print(table[i][j] + " ");
+				}
+				System.out.println();
+			}
+		}
 
 		Map<String, Person> people = new HashMap<>();
 
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(OldMain.class.getResourceAsStream("players.txt")))) {
+				new InputStreamReader(OldMain.class.getResourceAsStream("oldplayers.txt")))) {
 			String line;
 			while ((line = br.readLine()) != null) {
-				String[] bits = line.split("\\s+");
+				String[] bits = line.split("\\s");
 				String name = bits[0];
-				int handicap = Integer.parseInt(bits[1]);
-				int index = Integer.parseInt(bits[2]);
+				int handicap = Integer.parseInt(bits[2]);
+				int index = Integer.parseInt(bits[3]);
 				Person p = new Person(name, handicap, index);
 				people.put(name, p);
 				if (debug) {
 					System.out.println(p);
 				}
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(OldMain.class.getResourceAsStream("results.txt")))) {
+				new InputStreamReader(OldMain.class.getResourceAsStream("oldresults.txt")))) {
 			String line;
 			LocalDate oldDate = null;
 			while ((line = br.readLine()) != null) {
@@ -53,7 +72,7 @@ public class Main {
 
 				if (oldDate != null && date.isAfter(oldDate)) {
 					for (Person person : people.values()) {
-						checkHandicap(person, triggers);
+						checkHandicap(person, trigger);
 					}
 				}
 				oldDate = date;
@@ -73,43 +92,44 @@ public class Main {
 				int handicap2 = person2 == null ? Integer.parseInt(name2) : person2.handicap;
 
 				if (person1 != null) {
-					updatePerson(person1, true, person2, handicap2, level, date, swaps);
+					updatePerson(person1, true, person2, handicap2, level, date, table);
 				}
 				if (person2 != null) {
-					updatePerson(person2, false, person1, handicap1, level, date, swaps);
+					updatePerson(person2, false, person1, handicap1, level, date, table);
 				}
 
 			}
 
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		if (debug) {
 			System.out.println("Final handicap check");
 		}
 		for (Person p : people.values()) {
-			checkHandicap(p, triggers);
+			checkHandicap(p, trigger);
 			System.out.println(p.name + " " + p.index + "/" + p.handicap + " " + (p.index - p.initialIndex) + "/"
 					+ (p.initialHandicap - p.handicap));
 		}
 	}
 
-	private void checkHandicap(Person person, Triggers triggers) {
-		Triggers.Value t = triggers.get(person.handicap);
-		if (person.index >= t.getHighTrigger()) {
-			person.handicap = t.getHighHcap();
+	private void checkHandicap(Person person, int[] trigger) {
+		if (person.index >= trigger[person.handicap - 1]) {
+			person.handicap--;
 			System.out.println("Improved handicap for " + person.name + " to " + person.handicap);
-		} else if (person.index <= t.getLowTrigger()) {
-			person.handicap = t.getLowHcap();
+		} else if (person.index <= trigger[person.handicap + 1]) {
+			person.handicap++;
 			System.out.println("Worsened handicap for " + person.name + " to " + person.handicap);
 		}
 	}
 
 	private void updatePerson(Person person, boolean wins, Person opponent, int handicap, boolean level, LocalDate date,
-			Swap swaps) {
+			int[][] table) {
 
 		int points;
 		if (level) {
-			points = wins ? swaps.get(person.handicap, handicap) : -swaps.get(handicap, person.handicap);
+			points = wins ? table[person.handicap][handicap] : -table[handicap][person.handicap];
 		} else {
 			points = wins ? 10 : -10;
 		}
@@ -117,7 +137,7 @@ public class Main {
 		if (debug || person.name.equals(personToFollow)) {
 			System.out.println(person + " " + (wins ? "wins" : "loses") + " against " + handicap
 					+ (opponent != null ? " (" + opponent.name + ") " : " ") + (level ? "level" : "handicap")
-					+ (points > 0? " to gain " + points: " to lose " + (-points)) + " points");
+					+ " to gain " + points);
 		}
 		person.index += points;
 		if (person.index < 0) {

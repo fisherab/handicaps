@@ -9,9 +9,8 @@ public class Person {
 	int initialIndex;
 	int index;
 
-	public Person(String name, LocalDate date, int handicap, int index) {
+	public Person(String name,  int handicap, int index) {
 		this.name = name;
-		this.date = date;
 		this.initialHandicap = this.handicap = handicap;
 		this.initialIndex = this.index = index;
 	}
