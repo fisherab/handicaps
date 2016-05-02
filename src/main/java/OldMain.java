@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class OldMain {
 
-	String personToFollow = "Ian";
+	String personToFollow = "Sarah";
 
 	boolean debug = false;
 
