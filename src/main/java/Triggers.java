@@ -52,7 +52,7 @@ public class Triggers {
 		List<Integer> hcaps = new ArrayList<>();
 		List<Integer> triggers = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(OldMain.class.getResourceAsStream("triggers.txt")))) {
+				new InputStreamReader(Main.class.getResourceAsStream("triggers.txt")))) {
 			String line;
 
 			while ((line = br.readLine()) != null) {

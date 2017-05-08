@@ -14,7 +14,7 @@ public class Swap {
 
 		List<String> lines = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(OldMain.class.getResourceAsStream(fileName)))) {
+				new InputStreamReader(Main.class.getResourceAsStream(fileName)))) {
 			String line;
 
 			while ((line = br.readLine()) != null) {

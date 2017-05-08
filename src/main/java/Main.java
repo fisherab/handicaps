@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Main {
 
-	String personToFollow = "Steve";
+	String personToFollow = "ME";
 
 	boolean debug = false;
 
@@ -25,7 +25,7 @@ public class Main {
 		Map<String, Person> people = new HashMap<>();
 
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(OldMain.class.getResourceAsStream("players.txt")))) {
+				new InputStreamReader(Main.class.getResourceAsStream("players.txt")))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] bits = line.split("\\s+");
@@ -40,7 +40,7 @@ public class Main {
 			}
 		}
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(OldMain.class.getResourceAsStream("results.txt")))) {
+				new InputStreamReader(Main.class.getResourceAsStream("results.txt")))) {
 			String line;
 			LocalDate oldDate = null;
 			while ((line = br.readLine()) != null) {
@@ -74,9 +74,11 @@ public class Main {
 
 				if (person1 != null) {
 					updatePerson(person1, true, person2, handicap2, level, date, swaps);
+					person1.addGame();
 				}
 				if (person2 != null) {
 					updatePerson(person2, false, person1, handicap1, level, date, swaps);
+					person2.addGame();
 				}
 
 			}
@@ -89,7 +91,7 @@ public class Main {
 		for (Person p : people.values()) {
 			checkHandicap(p, triggers);
 			System.out.println(p.name + " " + p.index + "/" + p.handicap + " " + (p.index - p.initialIndex) + "/"
-					+ (p.initialHandicap - p.handicap));
+					+ (p.initialHandicap - p.handicap) + " played " + p.getPlayed());
 		}
 	}
 
@@ -117,7 +119,7 @@ public class Main {
 		if (debug || person.name.equals(personToFollow)) {
 			System.out.println(person + " " + (wins ? "wins" : "loses") + " against " + handicap
 					+ (opponent != null ? " (" + opponent.name + ") " : " ") + (level ? "level" : "handicap")
-					+ (points > 0? " to gain " + points: " to lose " + (-points)) + " points");
+					+ (points > 0 ? " to gain " + points : " to lose " + (-points)) + " points");
 		}
 		person.index += points;
 		if (person.index < 0) {
