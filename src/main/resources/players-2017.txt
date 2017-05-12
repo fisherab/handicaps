@@ -1,0 +1,13 @@
+Steve 3 1738
+Ivo  3 1626
+Mike 4 1624
+Ian  5 1533
+ME 6 1437
+Roy  6 1379
+Sarah 8 1302
+Pat 8 1299
+Mary 10 1200
+JudyGoodall 10 1180
+Norman 11 1131
+Pam 12 1120
+JudyGold 14 1047

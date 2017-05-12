@@ -8,7 +8,8 @@ import java.util.Map;
 
 public class Main {
 
-	String personToFollow = "ME";
+	String personToFollow = "Ian";
+	int year = 2017;
 
 	boolean debug = false;
 
@@ -25,7 +26,7 @@ public class Main {
 		Map<String, Person> people = new HashMap<>();
 
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(Main.class.getResourceAsStream("players.txt")))) {
+				new InputStreamReader(Main.class.getResourceAsStream("players-" + year + ".txt")))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] bits = line.split("\\s+");
@@ -40,7 +41,7 @@ public class Main {
 			}
 		}
 		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(Main.class.getResourceAsStream("results.txt")))) {
+				new InputStreamReader(Main.class.getResourceAsStream("results-" + year + ".txt")))) {
 			String line;
 			LocalDate oldDate = null;
 			while ((line = br.readLine()) != null) {
