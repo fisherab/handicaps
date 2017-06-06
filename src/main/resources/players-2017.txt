@@ -11,3 +11,6 @@ JudyGoodall 10 1180
 Norman 11 1131
 Pam 12 1120
 JudyGold 14 1047
+Peter 8 1300
+Katherine 7 1350
+Jim 1 1889
