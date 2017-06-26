@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class Main {
 
-	String personToFollow = "Pam";
+	String personToFollow = "Pat";
 	int year = 2017;
-
+	boolean changes = false;
 	boolean debug = false;
 
 	public static void main(String[] args) throws IOException {
@@ -35,9 +35,6 @@ public class Main {
 				int index = Integer.parseInt(bits[2]);
 				Person p = new Person(name, handicap, index);
 				people.put(name, p);
-				if (debug) {
-					System.out.println(p);
-				}
 			}
 		}
 		try (BufferedReader br = new BufferedReader(
@@ -54,7 +51,7 @@ public class Main {
 
 				if (oldDate != null && date.isAfter(oldDate)) {
 					for (Person person : people.values()) {
-						checkHandicap(person, triggers);
+						checkHandicap(person, triggers, changes || person.name.equals(personToFollow));
 					}
 				}
 				oldDate = date;
@@ -90,20 +87,24 @@ public class Main {
 			System.out.println("Final handicap check");
 		}
 		for (Person p : people.values()) {
-			checkHandicap(p, triggers);
+			checkHandicap(p, triggers, changes);
 			System.out.println(p.name + " " + p.index + "/" + p.handicap + " " + (p.index - p.initialIndex) + "/"
 					+ (p.initialHandicap - p.handicap) + " played " + p.getPlayed());
 		}
 	}
 
-	private void checkHandicap(Person person, Triggers triggers) {
+	private void checkHandicap(Person person, Triggers triggers, boolean changes) {
 		Triggers.Value t = triggers.get(person.handicap);
 		if (person.index >= t.getHighTrigger()) {
 			person.handicap = t.getHighHcap();
-			System.out.println("Improved handicap for " + person.name + " to " + person.handicap);
+			if (changes) {
+				System.out.println("Improved handicap for " + person.name + " to " + person.handicap);
+			}
 		} else if (person.index <= t.getLowTrigger()) {
 			person.handicap = t.getLowHcap();
-			System.out.println("Worsened handicap for " + person.name + " to " + person.handicap);
+			if (changes) {
+				System.out.println("Worsened handicap for " + person.name + " to " + person.handicap);
+			}
 		}
 	}
 
@@ -117,14 +118,18 @@ public class Main {
 			points = wins ? 10 : -10;
 		}
 		person.date = date;
-		if (debug || person.name.equals(personToFollow)) {
-			System.out.println(person + " " + (wins ? "wins" : "loses") + " against " + handicap
-					+ (opponent != null ? " (" + opponent.name + ") " : " ") + (level ? "level" : "handicap")
-					+ (points > 0 ? " to gain " + points : " to lose " + (-points)) + " points");
-		}
 		person.index += points;
 		if (person.index < 0) {
 			person.index = 0;
 		}
+		if (debug || person.name.equals(personToFollow)) {
+			if (debug) {
+				System.out.print(person.name + " ");
+			}
+			System.out.println(person.date + " vs " + (opponent != null ? opponent.name : "??") + " (" + handicap + ") "
+					+ (level ? "L" : "H") + (wins ? " Win " : " Loss ") + (points > 0 ? "+" + points : "-" + (-points))
+					+ " " + person.index);
+		}
+
 	}
 }

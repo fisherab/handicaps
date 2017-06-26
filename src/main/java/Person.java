@@ -16,10 +16,6 @@ public class Person {
 		this.initialIndex = this.index = index;
 	}
 
-	public String toString() {
-		return name + " " + date + " h " + handicap + " i " + index + " played " + played;
-	}
-
 	public void addGame() {
 		played++;
 	}
