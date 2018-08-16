@@ -14,3 +14,4 @@ JudyGold 14 1047
 Peter 8 1300
 Katherine 7 1350
 Jim 1 1889
+Bill 6 1374

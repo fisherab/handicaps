@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Main {
 
-	String personToFollow = "Pat";
+	String personToFollow = "Norman";
 	int year = 2017;
 	boolean changes = false;
 	boolean debug = false;
@@ -110,7 +110,6 @@ public class Main {
 
 	private void updatePerson(Person person, boolean wins, Person opponent, int handicap, boolean level, LocalDate date,
 			Swap swaps) {
-
 		int points;
 		if (level) {
 			points = wins ? swaps.get(person.handicap, handicap) : -swaps.get(handicap, person.handicap);
